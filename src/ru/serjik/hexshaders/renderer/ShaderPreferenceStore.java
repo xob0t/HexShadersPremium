@@ -21,12 +21,12 @@ public class ShaderPreferenceStore implements PreferenceStore {
      * Clears all stored preferences.
      */
     public void clearAll() {
-        this.sharedPreferences.edit().clear().commit();
+        this.sharedPreferences.edit().clear().apply();
     }
 
     @Override
     public void put(String key, String value) {
-        this.sharedPreferences.edit().putString(key, value).commit();
+        this.sharedPreferences.edit().putString(key, value).apply();
     }
 
     @Override

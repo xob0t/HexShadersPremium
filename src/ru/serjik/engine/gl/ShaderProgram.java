@@ -10,6 +10,11 @@ public abstract class ShaderProgram {
 
     public ShaderProgram(String combinedSourceCode) {
         String[] shaders = combinedSourceCode.split("====");
+        if (shaders.length < 2) {
+            SerjikLog.log("Shader source missing '====' delimiter between vertex and fragment shaders");
+            this.programHandle = 0;
+            return;
+        }
         this.programHandle = createProgram(shaders[0], shaders[1]);
     }
 
@@ -74,5 +79,23 @@ public abstract class ShaderProgram {
 
     protected int getAttribLocation(String name) {
         return GLES20.glGetAttribLocation(this.programHandle, name);
+    }
+
+    /**
+     * Releases the GL program and attached shader resources. Must be called on the GL thread.
+     */
+    public void release() {
+        if (this.vertexShaderHandle != 0) {
+            GLES20.glDeleteShader(this.vertexShaderHandle);
+            this.vertexShaderHandle = 0;
+        }
+        if (this.fragmentShaderHandle != 0) {
+            GLES20.glDeleteShader(this.fragmentShaderHandle);
+            this.fragmentShaderHandle = 0;
+        }
+        if (this.programHandle != 0) {
+            GLES20.glDeleteProgram(this.programHandle);
+            this.programHandle = 0;
+        }
     }
 }

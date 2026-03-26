@@ -12,7 +12,7 @@ public abstract class PreferenceController {
     public static PreferenceController create(String typeName, String[] params, PreferenceEntry entry, Context context) {
         String className = "ru.serjik.preferences.controllers." + typeName + "Controller";
         try {
-            PreferenceController controller = (PreferenceController) Class.forName(className).newInstance();
+            PreferenceController controller = (PreferenceController) Class.forName(className).getDeclaredConstructor().newInstance();
             controller.preferenceEntry = entry;
             controller.context = context;
             controller.density = context.getResources().getDisplayMetrics().density;

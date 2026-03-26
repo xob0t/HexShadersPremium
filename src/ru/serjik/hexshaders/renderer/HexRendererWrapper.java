@@ -62,6 +62,9 @@ public class HexRendererWrapper extends GLRenderer {
      * Returns performance/debug info from the current scene.
      */
     public String[] getInfo() {
+        if (this.scene == null) {
+            return new String[]{"", "", "", ""};
+        }
         return this.scene.getInfo();
     }
 }

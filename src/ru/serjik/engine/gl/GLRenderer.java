@@ -2,13 +2,14 @@ package ru.serjik.engine.gl;
 
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public abstract class GLRenderer {
     private GLSurfaceView surfaceView;
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
     private int frameDelayMillis = 16;
     private int maxDeltaMillis = 250;
 

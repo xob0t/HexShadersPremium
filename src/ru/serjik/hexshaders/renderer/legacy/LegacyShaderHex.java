@@ -14,7 +14,7 @@ import ru.serjik.utils.AssetsUtils;
  * Renders all hexagons as point sprites in one draw call.
  */
 public class LegacyShaderHex extends ShaderProgram {
-    private static float globalTime = 0.0f;
+    private float globalTime = 0.0f;
 
     public int uniformSize;
     public int uniformTexture;

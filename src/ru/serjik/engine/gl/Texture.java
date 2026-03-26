@@ -39,4 +39,15 @@ public class Texture {
     public void bind() {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, this.textureId);
     }
+
+    /**
+     * Deletes the GL texture resource. Must be called on the GL thread.
+     */
+    public void release() {
+        if (this.textureId != 0) {
+            int[] ids = new int[]{this.textureId};
+            GLES20.glDeleteTextures(1, ids, 0);
+            this.textureId = 0;
+        }
+    }
 }

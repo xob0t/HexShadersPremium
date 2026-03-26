@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public final class PreferenceParser {
 
@@ -51,7 +52,7 @@ public final class PreferenceParser {
             int contentStart = startIdx + startMarker.length();
             int endIdx = source.indexOf(endMarker, contentStart);
             if (endIdx > contentStart) {
-                String[] parts = source.substring(contentStart, endIdx).split(",", -1);
+                String[] parts = source.substring(contentStart, endIdx).split(Pattern.quote(separator), -1);
                 for (String part : parts) {
                     items.add(part);
                 }

@@ -125,8 +125,10 @@ public class LegacyHexScene implements HexScene {
         List<String> textures = PreferenceParser.extractSection(shaderSource, "textures(", ",", ")");
         Map<String, PreferenceEntry> prefMap = PreferenceParser.createPreferenceMap(PreferenceParser.extractPrefTokens(shaderSource), shaderStore);
         String substitutedSource = PreferenceParser.substitutePreferences(shaderSource, shaderStore);
-        this.pointsInRow = new IntegerValue(((PreferenceEntry) prefMap.get("pointsInTheRow")).get()).value;
-        this.timeScale = new IntegerValue(((PreferenceEntry) prefMap.get("timeScale")).get()).value;
+        PreferenceEntry pointsEntry = prefMap.get("pointsInTheRow");
+        this.pointsInRow = pointsEntry != null ? new IntegerValue(pointsEntry.get()).value : 15;
+        PreferenceEntry timeScaleEntry = prefMap.get("timeScale");
+        this.timeScale = timeScaleEntry != null ? new IntegerValue(timeScaleEntry.get()).value : 50;
         this.shaderHex = new LegacyShaderHex(this.assets, substitutedSource, textures, this.timeScale);
         ShaderProgram.releaseCompiler();
         appStore.put("reset_settings", "false");

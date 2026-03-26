@@ -6,7 +6,6 @@ import android.opengl.GLES20;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import ru.serjik.engine.gl.ShaderProgram;
 import ru.serjik.engine.gl.Texture;
 import ru.serjik.utils.AssetsUtils;
@@ -17,25 +16,25 @@ import ru.serjik.utils.AssetsUtils;
  * supporting partial (batched) rendering across multiple frames.
  */
 public class SlideShowShaderHex extends ShaderProgram {
-    private AtomicInteger attribPos;
-    private AtomicInteger attribTexPos;
-    private AtomicInteger uniformOffset;
-    private AtomicInteger uniformResolution;
-    private AtomicInteger uniformGlobalTime;
-    private AtomicInteger uniformTimeDelta;
-    private AtomicInteger uniformFrame;
+    private int attribPos;
+    private int attribTexPos;
+    private int uniformOffset;
+    private int uniformResolution;
+    private int uniformGlobalTime;
+    private int uniformTimeDelta;
+    private int uniformFrame;
     private int[] uniformChannels;
     private Texture[] channelTextures;
 
     public SlideShowShaderHex(Context context, String shaderSource, List<String> textureNames) {
         super(shaderSource);
-        this.attribPos = new AtomicInteger(-1);
-        this.attribTexPos = new AtomicInteger(-1);
-        this.uniformOffset = new AtomicInteger(-1);
-        this.uniformResolution = new AtomicInteger(-1);
-        this.uniformGlobalTime = new AtomicInteger(-1);
-        this.uniformTimeDelta = new AtomicInteger(-1);
-        this.uniformFrame = new AtomicInteger(-1);
+        this.attribPos = -1;
+        this.attribTexPos = -1;
+        this.uniformOffset = -1;
+        this.uniformResolution = -1;
+        this.uniformGlobalTime = -1;
+        this.uniformTimeDelta = -1;
+        this.uniformFrame = -1;
         this.uniformChannels = new int[]{-1, -1, -1};
         this.channelTextures = new Texture[3];
         AssetManager assets = context.getAssets();
@@ -49,13 +48,13 @@ public class SlideShowShaderHex extends ShaderProgram {
             this.uniformChannels[i] = getUniformLocation("iChannel" + i);
         }
 
-        this.uniformResolution.set(getUniformLocation("iResolution"));
-        this.uniformGlobalTime.set(getUniformLocation("iGlobalTime"));
-        this.uniformTimeDelta.set(getUniformLocation("iTimeDelta"));
-        this.uniformFrame.set(getUniformLocation("iFrame"));
-        this.uniformOffset.set(getUniformLocation("u_offset"));
-        this.attribPos.set(getAttribLocation("a_pos"));
-        this.attribTexPos.set(getAttribLocation("t_pos"));
+        this.uniformResolution = getUniformLocation("iResolution");
+        this.uniformGlobalTime = getUniformLocation("iGlobalTime");
+        this.uniformTimeDelta = getUniformLocation("iTimeDelta");
+        this.uniformFrame = getUniformLocation("iFrame");
+        this.uniformOffset = getUniformLocation("u_offset");
+        this.attribPos = getAttribLocation("a_pos");
+        this.attribTexPos = getAttribLocation("t_pos");
     }
 
     /**
@@ -75,11 +74,11 @@ public class SlideShowShaderHex extends ShaderProgram {
                      int startIndex, int count, float globalTime, float timeDelta, int frameIndex) {
         use();
         bindPositions(positions);
-        GLES20.glUniform3f(this.uniformResolution.get(), rtWidth, rtHeight, rtWidth / rtHeight);
-        GLES20.glUniform1f(this.uniformGlobalTime.get(), globalTime);
-        GLES20.glUniform1f(this.uniformTimeDelta.get(), timeDelta);
-        GLES20.glUniform1i(this.uniformFrame.get(), frameIndex);
-        GLES20.glUniform1f(this.uniformOffset.get(), offset);
+        GLES20.glUniform3f(this.uniformResolution, rtWidth, rtHeight, rtWidth / rtHeight);
+        GLES20.glUniform1f(this.uniformGlobalTime, globalTime);
+        GLES20.glUniform1f(this.uniformTimeDelta, timeDelta);
+        GLES20.glUniform1i(this.uniformFrame, frameIndex);
+        GLES20.glUniform1f(this.uniformOffset, offset);
         if (this.channelTextures[0] != null) {
             GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
             this.channelTextures[0].bind();
@@ -100,10 +99,10 @@ public class SlideShowShaderHex extends ShaderProgram {
      */
     public void bindPositions(FloatBuffer positions) {
         positions.position(0);
-        GLES20.glVertexAttribPointer(this.attribPos.get(), 2, GLES20.GL_FLOAT, false, 16, (Buffer) positions);
-        GLES20.glEnableVertexAttribArray(this.attribPos.get());
+        GLES20.glVertexAttribPointer(this.attribPos, 2, GLES20.GL_FLOAT, false, 16, (Buffer) positions);
+        GLES20.glEnableVertexAttribArray(this.attribPos);
         positions.position(2);
-        GLES20.glVertexAttribPointer(this.attribTexPos.get(), 2, GLES20.GL_FLOAT, false, 16, (Buffer) positions);
-        GLES20.glEnableVertexAttribArray(this.attribTexPos.get());
+        GLES20.glVertexAttribPointer(this.attribTexPos, 2, GLES20.GL_FLOAT, false, 16, (Buffer) positions);
+        GLES20.glEnableVertexAttribArray(this.attribTexPos);
     }
 }

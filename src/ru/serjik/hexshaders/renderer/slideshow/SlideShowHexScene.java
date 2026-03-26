@@ -27,7 +27,7 @@ import ru.serjik.wallpaper.WallpaperOffsetsListener;
  * across frames, achieving higher visual quality at the cost of temporal resolution.
  */
 public class SlideShowHexScene implements HexScene {
-    private static float globalTime = 0.0f;
+    private float globalTime = 0.0f;
 
     private AssetManager assets;
     private Context context;
@@ -40,6 +40,7 @@ public class SlideShowHexScene implements HexScene {
     private SlideShowShaderHex shaderHex;
     private SlideShowFinalShader finalShader;
 
+    private final Object initLock = new Object();
     private RenderTarget screenTarget;
     private RenderTarget renderTargetA;
     private RenderTarget renderTargetB;
@@ -134,6 +135,11 @@ public class SlideShowHexScene implements HexScene {
         GLES20.glDisable(GLES20.GL_CULL_FACE);
         GLES20.glDisable(GLES20.GL_BLEND);
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        // Release old render targets to prevent GPU memory leaks
+        if (this.screenTarget != null) this.screenTarget.release();
+        if (this.renderTargetA != null) this.renderTargetA.release();
+        if (this.renderTargetB != null) this.renderTargetB.release();
+        if (this.renderTargetC != null) this.renderTargetC.release();
         this.screenTarget = new RenderTarget(width, height, false);
         this.renderTargetA = new RenderTarget(256, 256, true);
         this.renderTargetB = new RenderTarget(256, 256, true);
@@ -169,7 +175,7 @@ public class SlideShowHexScene implements HexScene {
     @Override
     public void initialize() {
         ShaderPreferenceStore appStore = new ShaderPreferenceStore("application_store", this.context);
-        synchronized (this.context) {
+        synchronized (this.initLock) {
             if (appStore.get("reset_settings", "false").equals("true")) {
                 appStore.clearAll();
             }
@@ -180,8 +186,10 @@ public class SlideShowHexScene implements HexScene {
             List<String> textures = PreferenceParser.extractSection(shaderSource, "textures(", ",", ")");
             Map<String, PreferenceEntry> prefMap = PreferenceParser.createPreferenceMap(PreferenceParser.extractPrefTokens(shaderSource), shaderStore);
             String substitutedSource = PreferenceParser.substitutePreferences(shaderSource, shaderStore);
-            this.pointsInRow = new IntegerValue(((PreferenceEntry) prefMap.get("pointsInTheRow")).get()).value;
-            this.timeScale = new IntegerValue(((PreferenceEntry) prefMap.get("timeScale")).get()).value;
+            PreferenceEntry pointsEntry = prefMap.get("pointsInTheRow");
+            this.pointsInRow = pointsEntry != null ? new IntegerValue(pointsEntry.get()).value : 15;
+            PreferenceEntry timeScaleEntry = prefMap.get("timeScale");
+            this.timeScale = timeScaleEntry != null ? new IntegerValue(timeScaleEntry.get()).value : 50;
             if (prefMap.containsKey("slides")) {
                 int[] fibonacciSequence = {1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144};
                 int slidesIndex = new IntegerValue(((PreferenceEntry) prefMap.get("slides")).get()).value;
