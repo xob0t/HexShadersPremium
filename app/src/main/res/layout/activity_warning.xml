@@ -17,6 +17,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
-        android:text="@string/open_google_play_store"
-        android:onClick="buttonOpenPlayStoreClick"/>
+        android:text="@string/open_google_play_store"/>
 </LinearLayout>

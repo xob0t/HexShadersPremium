@@ -3,7 +3,7 @@ package ru.serjik.hexshaders.premium
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import android.view.View
+import android.os.Bundle
 import ru.serjik.wallpaper.BaseLauncherActivity
 
 /**
@@ -19,15 +19,21 @@ class HexShadersActivity : BaseLauncherActivity() {
     override val settingsActivityClass: Class<*>
         get() = HexShadersSettings::class.java
 
-    /** Opens the Play Store page for this app (called from XML onClick). */
-    fun buttonOpenPlayStoreClick(@Suppress("UNUSED_PARAMETER") view: View) {
+    override val wallpaperServiceClass: Class<*>
+        get() = HexShadersService::class.java
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        findViewById<android.view.View>(R.id.button_open_play_store_link)?.setOnClickListener {
+            openPlayStore()
+        }
+    }
+
+    private fun openPlayStore() {
         try {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ru.serjik.hexshaders.premium")))
         } catch (e: ActivityNotFoundException) {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=ru.serjik.hexshaders.premium")))
         }
     }
-
-    override val wallpaperServiceClass: Class<*>
-        get() = HexShadersService::class.java
 }
