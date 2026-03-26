@@ -1,4 +1,4 @@
-# HexShaders Premium
+# HexShaders
 
 Android live wallpaper that renders animated GLSL shader effects through a hexagonal grid of point sprites using OpenGL ES 2.0. Includes 25 shader effects with per-shader configuration (detail level, animation speed, colors).
 
