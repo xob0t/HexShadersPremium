@@ -7,14 +7,14 @@ object PreferenceParser {
 
     @JvmStatic
     fun substitutePreferences(shaderSource: String, store: PreferenceStore): String {
-        val parts = shaderSource.split("\\$", limit = -1)
+        val parts = shaderSource.split("$")
         val sb = StringBuilder(shaderSource.length)
         var isToken = false
         for (part in parts) {
             if (!isToken) {
                 sb.append(part)
             } else if (!part.endsWith("skip")) {
-                val keyDefault = part.split("\\|", limit = -1)
+                val keyDefault = part.split("|")
                 sb.append(PreferenceEntry(keyDefault[0], keyDefault[1], store).get())
             }
             isToken = !isToken
@@ -38,7 +38,7 @@ object PreferenceParser {
     fun extractPrefTokens(shaderSource: String): List<String> {
         val tokens = mutableListOf<String>()
         var isToken = false
-        for (part in shaderSource.split("\\$", limit = -1)) {
+        for (part in shaderSource.split("$")) {
             if (isToken) tokens.add(part)
             isToken = !isToken
         }
@@ -58,8 +58,7 @@ object PreferenceParser {
             val contentStart = startIdx + startMarker.length
             val endIdx = source.indexOf(endMarker, contentStart)
             if (endIdx > contentStart) {
-                val parts = source.substring(contentStart, endIdx)
-                    .split(Pattern.quote(separator).toRegex(), limit = -1)
+                val parts = source.substring(contentStart, endIdx).split(separator)
                 items.addAll(parts)
             }
         }
@@ -70,7 +69,7 @@ object PreferenceParser {
     fun createPreferenceMap(prefTokens: List<String>, store: PreferenceStore): Map<String, PreferenceEntry> {
         val map = HashMap<String, PreferenceEntry>(prefTokens.size)
         for (token in prefTokens) {
-            val keyDefault = token.split("\\|", limit = -1)
+            val keyDefault = token.split("|")
             val key = keyDefault[0]
             map[key] = PreferenceEntry(key, keyDefault[1], store)
         }
@@ -79,9 +78,9 @@ object PreferenceParser {
 
     @JvmStatic
     fun createController(container: ViewGroup, prefString: String, store: PreferenceStore): PreferenceController {
-        val parts = prefString.split("\\|".toRegex())
+        val parts = prefString.split("|")
         val controller = PreferenceController.create(
-            parts[2], parts[3].split(";", limit = -1).toTypedArray(),
+            parts[2], parts[3].split(";").toTypedArray(),
             PreferenceEntry(parts[0], parts[1], store),
             container.context
         )

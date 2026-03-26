@@ -48,6 +48,11 @@ abstract class GLWallpaperService : WallpaperService(), RendererFactory, Wallpap
         private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key == "reload_signal") {
                 renderer?.resetContext()
+                // Also update wallpaper colors in case user changed RGB preferences
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                    lastKnownShaderName = getCurrentShaderName()
+                    notifyColorsChanged()
+                }
             }
         }
 
@@ -136,7 +141,7 @@ abstract class GLWallpaperService : WallpaperService(), RendererFactory, Wallpap
          */
         override fun onComputeColors(): WallpaperColors? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                val colors = ShaderColors.getColors(lastKnownShaderName)
+                val colors = ShaderColors.getColors(lastKnownShaderName, applicationContext)
                 return WallpaperColors(
                     Color.valueOf(colors.primary),
                     Color.valueOf(colors.secondary),
