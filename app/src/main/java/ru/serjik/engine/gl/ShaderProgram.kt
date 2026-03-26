@@ -101,7 +101,6 @@ abstract class ShaderProgram(combinedSourceCode: String) {
     }
 
     companion object {
-        @JvmStatic
         fun releaseCompiler() {
             GLES20.glReleaseShaderCompiler()
         }

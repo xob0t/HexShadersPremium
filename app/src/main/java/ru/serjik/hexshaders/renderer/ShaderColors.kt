@@ -18,9 +18,9 @@ import ru.serjik.preferences.values.RGBValue
 object ShaderColors {
 
     data class ColorSet(
-        @JvmField val primary: Int,
-        @JvmField val secondary: Int,
-        @JvmField val tertiary: Int
+        val primary: Int,
+        val secondary: Int,
+        val tertiary: Int
     )
 
     /**
@@ -145,7 +145,6 @@ object ShaderColors {
      * @param context    application context for reading SharedPreferences; if null, uses hardcoded fallback
      * @return the ColorSet for Android WallpaperColors
      */
-    @JvmStatic
     fun getColors(shaderName: String?, context: Context? = null): ColorSet {
         if (shaderName == null) return DEFAULT_COLORS
 

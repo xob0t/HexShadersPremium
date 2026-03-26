@@ -5,7 +5,6 @@ import java.util.regex.Pattern
 
 object PreferenceParser {
 
-    @JvmStatic
     fun substitutePreferences(shaderSource: String, store: PreferenceStore): String {
         val parts = shaderSource.split("$")
         val sb = StringBuilder(shaderSource.length)
@@ -22,7 +21,6 @@ object PreferenceParser {
         return sb.toString()
     }
 
-    @JvmStatic
     fun createControllers(
         container: ViewGroup,
         prefStrings: List<String>,
@@ -34,7 +32,6 @@ object PreferenceParser {
         }
     }
 
-    @JvmStatic
     fun extractPrefTokens(shaderSource: String): List<String> {
         val tokens = mutableListOf<String>()
         var isToken = false
@@ -45,7 +42,6 @@ object PreferenceParser {
         return tokens
     }
 
-    @JvmStatic
     fun extractSection(
         source: String,
         startMarker: String,
@@ -65,7 +61,6 @@ object PreferenceParser {
         return items
     }
 
-    @JvmStatic
     fun createPreferenceMap(prefTokens: List<String>, store: PreferenceStore): Map<String, PreferenceEntry> {
         val map = HashMap<String, PreferenceEntry>(prefTokens.size)
         for (token in prefTokens) {
@@ -76,7 +71,6 @@ object PreferenceParser {
         return map
     }
 
-    @JvmStatic
     fun createController(container: ViewGroup, prefString: String, store: PreferenceStore): PreferenceController {
         val parts = prefString.split("|")
         val controller = PreferenceController.create(

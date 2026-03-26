@@ -22,9 +22,9 @@ class LegacyShaderHex(
 
     private var globalTime = 0.0f
 
-    @JvmField var uniformSize: Int
-    @JvmField var uniformTexture: Int
-    @JvmField var attribPos: Int
+    var uniformSize: Int
+    var uniformTexture: Int
+    var attribPos: Int
 
     private val uniformResolution: Int
     private val uniformGlobalTime: Int

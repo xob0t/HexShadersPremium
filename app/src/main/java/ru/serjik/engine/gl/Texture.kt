@@ -42,13 +42,11 @@ class Texture(bitmap: Bitmap, recycleBitmap: Boolean) {
     }
 
     companion object {
-        @JvmStatic
         fun setFilter(minFilter: Int, magFilter: Int) {
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, minFilter)
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, magFilter)
         }
 
-        @JvmStatic
         fun setWrap(wrapS: Int, wrapT: Int) {
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, wrapS)
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, wrapT)

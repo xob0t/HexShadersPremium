@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import java.io.IOException
 
 object AssetsUtils {
-    @JvmStatic
     fun readText(path: String, assets: AssetManager): String {
         try {
             return assets.open(path).use { input ->
@@ -18,7 +17,6 @@ object AssetsUtils {
         }
     }
 
-    @JvmStatic
     fun readBitmap(path: String, assets: AssetManager): Bitmap {
         try {
             return assets.open(path).use { input ->

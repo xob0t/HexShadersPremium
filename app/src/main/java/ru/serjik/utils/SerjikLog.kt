@@ -19,12 +19,10 @@ object SerjikLog {
         return ""
     }
 
-    @JvmStatic
     fun logWithCaller(message: String) {
         Log.i(TAG, getCallerInfo() + message)
     }
 
-    @JvmStatic
     fun log(message: String) {
         Log.i(TAG, message)
     }

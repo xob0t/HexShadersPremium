@@ -4,7 +4,6 @@ import android.opengl.GLES20
 import ru.serjik.utils.SerjikLog
 
 object GLError {
-    @JvmStatic
     fun check(tag: String) {
         while (true) {
             val error = GLES20.glGetError()

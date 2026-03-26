@@ -5,7 +5,6 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
 object BufferAllocator {
-    @JvmStatic
     fun createFloatBuffer(floatCount: Int): FloatBuffer {
         return ByteBuffer.allocateDirect(floatCount * 4).apply {
             order(ByteOrder.nativeOrder())

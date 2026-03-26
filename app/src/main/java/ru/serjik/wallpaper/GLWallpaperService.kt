@@ -11,6 +11,7 @@ import ru.serjik.engine.gl.GLRenderer
 import ru.serjik.engine.gl.RendererFactory
 import ru.serjik.hexshaders.renderer.ShaderColors
 import ru.serjik.utils.SerjikLog
+import kotlin.math.abs
 
 abstract class GLWallpaperService : WallpaperService(), RendererFactory, WallpaperOffsetsListener {
 
@@ -103,7 +104,7 @@ abstract class GLWallpaperService : WallpaperService(), RendererFactory, Wallpap
                 if (offsetChangeCounter > 3) {
                     offsetsActivated = true
                     wallpaperOffset = xOffset - 0.5f
-                } else if (Math.abs(xOffset - lastOffsetValue) <= 0.001f) {
+                } else if (abs(xOffset - lastOffsetValue) <= 0.001f) {
                     offsetChangeCounter = 0
                 } else {
                     offsetChangeCounter++
