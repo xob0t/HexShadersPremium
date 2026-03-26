@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "HexShadersPremium"
-include ':app'
+include(":app")
