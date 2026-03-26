@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/app_name"
-    android:settingsActivity="ru.serjik.hexshaders.premium.HexShadersSettings"
-    android:thumbnail="@drawable/ic_launcher" />
+    android:settingsActivity="ru.serjik.hexshaders.premium.HexShadersSettings" />

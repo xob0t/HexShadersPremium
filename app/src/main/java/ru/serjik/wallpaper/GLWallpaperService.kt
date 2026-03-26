@@ -75,6 +75,11 @@ abstract class GLWallpaperService : WallpaperService(), RendererFactory, Wallpap
             // Register SharedPreferences listener for reload signals
             prefs = getSharedPreferences("application_store", MODE_PRIVATE)
             prefs?.registerOnSharedPreferenceChangeListener(prefsListener)
+
+            // Notify initial wallpaper colors
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                notifyColorsChanged()
+            }
         }
 
         override fun onDestroy() {
@@ -137,8 +142,15 @@ abstract class GLWallpaperService : WallpaperService(), RendererFactory, Wallpap
 
         /**
          * Called by Android (API 27+) to get the wallpaper's dominant colors.
+         * Uses fromBitmap() with a synthetic bitmap painted with shader colors,
+         * which works more reliably across OEMs (e.g. Samsung One UI)
+         * than the 3-color constructor.
+         */
+        /**
+         * Called by Android (API 27+) to get the wallpaper's dominant colors.
          * Returns colors matching the active shader so the system theme/accent
          * matches the wallpaper appearance.
+         * Note: Samsung One UI ignores this and uses its own screenshot-based extraction.
          */
         override fun onComputeColors(): WallpaperColors? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
