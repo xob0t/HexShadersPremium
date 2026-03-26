@@ -16,13 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import ru.serjik.hexshaders.premium.databinding.ActivitySettingsBinding;
 import ru.serjik.hexshaders.renderer.HexRendererWrapper;
 import ru.serjik.hexshaders.renderer.ShaderPreferenceStore;
 import ru.serjik.preferences.PreferenceChangeListener;
@@ -38,9 +37,7 @@ import ru.serjik.utils.AssetsUtils;
  * Provides shader selection, per-shader preference controls, preview rendering, and performance info overlay.
  */
 public class HexShadersSettings extends BaseSettingsActivity {
-    private ViewGroup rootLayout;
-    private ViewGroup settingsLayout;
-    private Spinner shaderSpinner;
+    private ActivitySettingsBinding binding;
     private List<String> shaderList;
     private HexRendererWrapper renderer;
     private ShaderPreferenceStore appStore;
@@ -102,24 +99,23 @@ public class HexShadersSettings extends BaseSettingsActivity {
     private Runnable infoUpdater = new Runnable() {
         @Override
         public void run() {
-            ViewGroup infoLayout = (ViewGroup) findViewById(R.id.layout_info);
             String[] info = renderer.getInfo();
             if (info[0].contains("ok")) {
-                infoLayout.setBackgroundColor(Color.argb(128, 0, 128, 0));
+                binding.layoutInfo.setBackgroundColor(Color.argb(128, 0, 128, 0));
             }
             if (info[0].contains("good")) {
-                infoLayout.setBackgroundColor(Color.argb(128, 128, 128, 0));
+                binding.layoutInfo.setBackgroundColor(Color.argb(128, 128, 128, 0));
             }
             if (info[0].contains("bad")) {
-                infoLayout.setBackgroundColor(Color.argb(128, 128, 0, 0));
+                binding.layoutInfo.setBackgroundColor(Color.argb(128, 128, 0, 0));
             }
             if (info[0].contains("drop")) {
-                infoLayout.setBackgroundColor(Color.argb(128, 255, 0, 0));
+                binding.layoutInfo.setBackgroundColor(Color.argb(128, 255, 0, 0));
             }
             for (int i = 0; i < 4; i++) {
-                ((TextView) infoLayout.getChildAt(i)).setText(info[i]);
+                ((TextView) binding.layoutInfo.getChildAt(i)).setText(info[i]);
             }
-            infoLayout.postDelayed(this, 500L);
+            binding.layoutInfo.postDelayed(this, 500L);
         }
     };
 
@@ -138,14 +134,14 @@ public class HexShadersSettings extends BaseSettingsActivity {
      * Reloads settings for the currently selected shader: creates preference controls and triggers renderer reload.
      */
     private void reloadShaderSettings() {
-        String selectedShader = (String) this.shaderSpinner.getSelectedItem();
+        String selectedShader = (String) this.binding.spinnerShader.getSelectedItem();
         this.appStore.put("selected_shader", selectedShader);
         ShaderPreferenceStore shaderStore = new ShaderPreferenceStore(selectedShader, this);
         List<String> prefTokens = PreferenceParser.extractPrefTokens(AssetsUtils.readText("shaders/" + selectedShader, getAssets()));
         if (!isPremium() && prefTokens.size() > 4) {
             prefTokens = prefTokens.subList(0, 4);
         }
-        this.controllers = PreferenceParser.createControllers(this.settingsLayout, prefTokens, shaderStore);
+        this.controllers = PreferenceParser.createControllers(this.binding.layoutSettings, prefTokens, shaderStore);
         for (PreferenceController controller : this.controllers) {
             controller.getPreferenceEntry().getListeners().addListener(this.preferenceChangeListener);
         }
@@ -166,18 +162,18 @@ public class HexShadersSettings extends BaseSettingsActivity {
         if (this.renderer == null) {
             this.renderer = new HexRendererWrapper(new GLSurfaceView(this), this.previewOffsetsListener);
         }
-        this.rootLayout.addView(this.renderer.getSurfaceView(), 0);
+        this.binding.layoutRoot.addView(this.renderer.getSurfaceView(), 0);
         this.renderer.resume();
-        findViewById(R.id.layout_info).postDelayed(this.infoUpdater, 500L);
+        this.binding.layoutInfo.postDelayed(this.infoUpdater, 500L);
     }
 
     /**
      * Stops the preview renderer and cancels info overlay updates.
      */
     private void stopPreview() {
-        findViewById(R.id.layout_info).removeCallbacks(this.infoUpdater);
+        this.binding.layoutInfo.removeCallbacks(this.infoUpdater);
         this.renderer.pause();
-        this.rootLayout.removeView(this.renderer.getSurfaceView());
+        this.binding.layoutRoot.removeView(this.renderer.getSurfaceView());
     }
 
     /**
@@ -248,26 +244,24 @@ public class HexShadersSettings extends BaseSettingsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        this.binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(this.binding.getRoot());
         this.appStore = new ShaderPreferenceStore("application_store", this);
-        this.rootLayout = (ViewGroup) findViewById(R.id.layout_root);
-        this.settingsLayout = (ViewGroup) findViewById(R.id.layout_settings);
-        this.shaderSpinner = (Spinner) findViewById(R.id.spinner_shader);
         this.shaderList = listAvailableShaders();
-        this.shaderSpinner.setAdapter((SpinnerAdapter) new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, this.shaderList));
+        this.binding.spinnerShader.setAdapter((SpinnerAdapter) new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, this.shaderList));
         for (int i = 0; i < this.shaderList.size(); i++) {
             if (this.appStore.get("selected_shader", this.shaderList.get(2)).equals(this.shaderList.get(i))) {
-                this.shaderSpinner.setSelection(i);
+                this.binding.spinnerShader.setSelection(i);
             }
         }
-        this.shaderSpinner.setOnItemSelectedListener(this.shaderSelectedListener);
+        this.binding.spinnerShader.setOnItemSelectedListener(this.shaderSelectedListener);
         if (isPremium()) {
-            findViewById(R.id.layout_advice).setVisibility(View.GONE);
-            findViewById(R.id.button_reset_to_defaults).setOnClickListener(this.buttonClickListener);
+            this.binding.layoutAdvice.setVisibility(View.GONE);
+            this.binding.buttonResetToDefaults.setOnClickListener(this.buttonClickListener);
         } else {
-            findViewById(R.id.button_reset_to_defaults).setVisibility(View.GONE);
-            findViewById(R.id.button_buy_premium).setOnClickListener(this.buttonClickListener);
-            findViewById(R.id.button_shader_live).setOnClickListener(this.buttonClickListener);
+            this.binding.buttonResetToDefaults.setVisibility(View.GONE);
+            this.binding.buttonBuyPremium.setOnClickListener(this.buttonClickListener);
+            this.binding.buttonShaderLive.setOnClickListener(this.buttonClickListener);
         }
     }
 
