@@ -10,7 +10,6 @@ import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.SpinnerAdapter
 import android.widget.TextView
 import ru.serjik.hexshaders.premium.databinding.ActivitySettingsBinding
 import ru.serjik.hexshaders.renderer.HexRendererWrapper
@@ -219,8 +218,10 @@ class HexShadersSettings : BaseSettingsActivity() {
         appStore = ShaderPreferenceStore("application_store", this)
         shaderList = listAvailableShaders()
         binding.spinnerShader.adapter = ArrayAdapter(
-            this, android.R.layout.simple_list_item_activated_1, shaderList
-        ) as SpinnerAdapter
+            this, android.R.layout.simple_spinner_item, shaderList
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
         val defaultShader = appStore.get("selected_shader", shaderList.getOrElse(2) { shaderList[0] })
         for (i in shaderList.indices) {
             if (defaultShader == shaderList[i]) {

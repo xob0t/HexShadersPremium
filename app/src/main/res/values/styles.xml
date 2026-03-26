@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.DeviceDefault.NoTitle" parent="@android:style/Theme.DeviceDefault">
-        <item name="android:windowNoTitle">true</item>
-    </style>
+    <style name="Theme.HexShaders.Settings" parent="@android:style/Theme.DeviceDefault.NoActionBar" />
 </resources>
